@@ -6,10 +6,20 @@ public class ToDo {
 	private String due;// 마감일
 	private int dDay; // d-day
 	
+	public ToDo() {
+	}
+
 	public ToDo(int index, String list) {
 		super();
 		this.index = index;
 		this.list = list;
+	}
+	
+	public ToDo(String list, String due, int dDay) {
+		super();
+		this.list = list;
+		this.due = due;
+		this.dDay = dDay;
 	}
 	
 	public ToDo(int index, String list, String due, int dDay) {

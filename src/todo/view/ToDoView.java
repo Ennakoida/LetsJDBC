@@ -8,8 +8,8 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-import todo.ToDo;
 import todo.controller.ToDoController;
+import todo.model.vo.ToDo;
 
 public class ToDoView {
 	Scanner sc = new Scanner(System.in);
@@ -45,7 +45,9 @@ public class ToDoView {
 				
 				switch(choice) {
 					case 1:
-						insertToDo();
+						inputToDoTitle();
+						toDo = inputToDo();
+						tdList = controller.insertToDo(toDo);
 						break;
 					case 2:
 						deleteToDo();
@@ -91,23 +93,23 @@ public class ToDoView {
 		return choicenum;
 	}
 	
-	public ToDo insertToDo() { /////////// ToDo (기존 : int)
+	public void inputToDoTitle() {
 		System.out.println();
 		System.out.println("┌────────────────────────────────────────┐");
 		System.out.println("│        ◈ 할 일을 추가해 주세요 ◈       │");
 		System.out.println("└────────────────────────────────────────┘");
-		System.out.println("초기화면으로 돌아가려면 * 를 입력해주세요.");
+//		System.out.println("초기화면으로 돌아가려면 * 를 입력해주세요.");
 		System.out.println();
 		sc.nextLine();
-		for(int i = listIndex; i < toDoArr.length; i++) {
+	}
+	
+	private ToDo inputToDo() {
+		ToDo toDo = null;
+		
+		sc.nextLine();
+		while(true) {
 			System.out.print("▶ 할 일 : ");
 			String list = sc.nextLine();
-			
-			if(list.equals("*")) {
-				System.out.println("초기화면으로 돌아갑니다.");
-				System.out.println();
-				break;
-			}
 			
 			System.out.print("▷▷ 마감일 (yyyy/MM/dd) : ");
 			String due = sc.nextLine();
@@ -118,30 +120,77 @@ public class ToDoView {
 				Date date = trans.parse(due);
 				calendar.setTime(date);
 				dueDate = calendar.getTimeInMillis(); 
-
+				
 				long today = System.currentTimeMillis(); // 오늘 날짜
 				int dDay = (int)((dueDate - today) / 1000 / 60 / 60 / 24) + 1; // d-day 계산 (일)
 				
-				toDoArr[i] = new ToDo((listIndex + 1), list, due, dDay);
-				
-				listIndex++;
-				
+//				toDo = new ToDo((listIndex + 1), list, due, dDay);
+				toDo = new ToDo(list, due, dDay);			
 				System.out.println();
+				break;
 			} catch (ParseException e) {
 				System.out.println("마감일은 yyyy/MM/dd의 형식으로 입력해주세요.");
 				System.out.println();
-				i--;
 				continue;
 			}
-			
 		}
-		//////////////////////
-		ToDo toDo = new ToDo((listIndex + 1), list, due, dDay);
 		return toDo;
 	}
+	
+	
+//	public List<ToDo> insertToDo() {
+//		System.out.println();
+//		System.out.println("┌────────────────────────────────────────┐");
+//		System.out.println("│        ◈ 할 일을 추가해 주세요 ◈       │");
+//		System.out.println("└────────────────────────────────────────┘");
+//		System.out.println("초기화면으로 돌아가려면 * 를 입력해주세요.");
+//		System.out.println();
+//		sc.nextLine();
+//		
+//		ToDo toDo = null;
+//		List<ToDo> tdList = null;
+//		
+//		for(int i = listIndex; i < toDoArr.length; i++) {
+//			System.out.print("▶ 할 일 : ");
+//			String list = sc.nextLine();
+//			
+//			if(list.equals("*")) {
+//				System.out.println("초기화면으로 돌아갑니다.");
+//				System.out.println();
+//				break;
+//			}
+//			
+//			System.out.print("▷▷ 마감일 (yyyy/MM/dd) : ");
+//			String due = sc.nextLine();
+//			
+//			// 마감일 날짜 형식으로 만들어서 저장하기
+//			long dueDate = 0;
+//			try {
+//				Date date = trans.parse(due);
+//				calendar.setTime(date);
+//				dueDate = calendar.getTimeInMillis(); 
+//
+//				long today = System.currentTimeMillis(); // 오늘 날짜
+//				int dDay = (int)((dueDate - today) / 1000 / 60 / 60 / 24) + 1; // d-day 계산 (일)
+//				
+//				toDo = new ToDo((listIndex + 1), list, due, dDay);
+//				tdList.add(toDo);
+//				
+//				listIndex++;
+//				
+//				System.out.println();
+//			} catch (ParseException e) {
+//				System.out.println("마감일은 yyyy/MM/dd의 형식으로 입력해주세요.");
+//				System.out.println();
+//				i--;
+//				continue;
+//			}
+//			
+//		}
+//		return tdList;
+//	}
 
 	public void deleteToDo() {
-		// TODO Auto-generated method stub
 		System.out.println();
 		System.out.println("┌────────────────────────────────────────┐");
 		System.out.println("│   ◈ 완료한 할 일 번호를 적어주세요 ◈   │");
