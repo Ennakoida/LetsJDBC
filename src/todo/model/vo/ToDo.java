@@ -1,10 +1,13 @@
 package todo.model.vo;
 
+import java.sql.Date;
+
 public class ToDo {
 	private int index;
 	private String list;
 	private String due;// 마감일
 	private int dDay; // d-day
+	private Date today; 
 	
 	public ToDo() {
 	}
@@ -61,5 +64,15 @@ public class ToDo {
 	public void setdDay(int dDay) {
 		this.dDay = dDay;
 	}
+
+	public Date getToday() {
+		return today;
+	}
+
+	public void setToday(Date today) {
+		this.today = today;
+	}
+	
+	
 	
 }

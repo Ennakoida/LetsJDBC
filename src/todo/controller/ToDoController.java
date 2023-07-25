@@ -13,8 +13,13 @@ public class ToDoController {
 		toDoDao = new ToDoDAO();
 	}
 
-	public List<ToDo> insertToDo(ToDo toDo) {
-		List<ToDo> tdList = toDoDao.insertToDo(toDo);
+	public int insertToDo(ToDo toDo) {
+		int result = toDoDao.insertToDo(toDo);
+		return result;
+	}
+
+	public List<ToDo> selectToDo() {
+		List<ToDo> tdList = toDoDao.selectToDo();
 		return tdList;
 	}
 
