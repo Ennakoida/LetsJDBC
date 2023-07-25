@@ -1,15 +1,23 @@
 package com.kh.jdbc.day04.student.common;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.sql.*;
+import java.util.Properties;
 
 public class JDBCTemplate {
-	private final String DRIVER_NAME = "oracle.jdbc.driver.OracleDriver";
-	private final String URL         = "jdbc:oracle:thin:@localhost:1521:XE";
-	private final String USER 		 = "student";
-	private final String PASSWORD	 = "student";
+	
+	private Properties prop;
+	
+//	private final String DRIVER_NAME = "oracle.jdbc.driver.OracleDriver";
+//	private final String URL         = "jdbc:oracle:thin:@localhost:1521:XE";
+//	private final String USER 		 = "student";
+//	private final String PASSWORD	 = "student";
 	
 	// 디자인 패턴 : 각기 다른 소프트웨어 모듈이나 기능을 가진 응용 SW들
-	// 개발할 때 공통되는 설계 문제를 해결하기 위하여 사옹되는 패턴임
+	// 개발할 때 공통되는 설계 문제를 해결하기 위하여 사용되는 패턴임
 	// ==> 효율적인 방식을 위함
 	// 패턴의 종류 : 생성 / 구조 / 행위 .. 패턴
 	// 1. 생성 패턴 : 싱글톤 패턴, 추상 팩토리, 팩토리 메서드 ...
@@ -52,21 +60,55 @@ public class JDBCTemplate {
 			
 	}
 	
+	
+	// DBCP(DataBase Connection Pool)
 	public Connection createConnection() {
 //		Connection conn = null;
-		
 		try {
+			prop = new Properties();
+			Reader reader = new FileReader("resources/dev.properties"); // FileNotFoundException 예외 처리
+			prop.load(reader); // IOException 예외처리
+			String driverName = prop.getProperty("driverName");
+			String url = prop.getProperty("url");
+			String user = prop.getProperty("user");
+			String password = prop.getProperty("password");
 			if(conn == null || conn.isClosed()) {
-				Class.forName(DRIVER_NAME);
-				conn = DriverManager.getConnection(URL, USER, PASSWORD);
-				// DBCP(DataBase Connection Pool)
+//				Class.forName(DRIVER_NAME);
+				Class.forName(driverName);
+//				conn = DriverManager.getConnection(URL, USER, PASSWORD);
+				conn = DriverManager.getConnection(url, user, password);
+				conn.setAutoCommit(false); // 오토 커밋 풀어주세요
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return conn;	
+	}
+	
+	public static void commit(Connection conn) {
+		try {
+			if(conn != null && !conn.isClosed())
+				conn.commit(); // try catch
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void rollback(Connection conn) {
+		try {
+			if(conn != null && !conn.isClosed())
+				conn.rollback(); // try catch
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void close() {

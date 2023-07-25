@@ -42,6 +42,12 @@ public class StudentService {
 	public int insertStudent(Student student) {
 		Connection conn = jdbcTemplate.createConnection();
 		int result = sDao.insertStudent(conn, student);
+		result = sDao.updateStudent(conn, student);
+		
+		if(result > 1)
+			JDBCTemplate.commit(conn);
+		else
+			JDBCTemplate.rollback(conn);
 		jdbcTemplate.close();
 		return result;
 	}
@@ -49,6 +55,10 @@ public class StudentService {
 	public int updateStudent(Student student) {
 		Connection conn = jdbcTemplate.createConnection();
 		int result = sDao.updateStudent(conn, student);
+		if(result > 0)
+			JDBCTemplate.commit(conn);
+		else
+			JDBCTemplate.rollback(conn);
 		jdbcTemplate.close();
 		return result;
 	}
@@ -56,6 +66,10 @@ public class StudentService {
 	public int deleteStudent(String studentId) {
 		Connection conn = jdbcTemplate.createConnection();
 		int result = sDao.deleteStudent(conn, studentId);
+		if(result > 0)
+			JDBCTemplate.commit(conn);
+		else
+			JDBCTemplate.rollback(conn);
 		jdbcTemplate.close();
 		return result;
 	}
